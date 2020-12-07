@@ -75,7 +75,7 @@ map<int, int> parseEvidence(string filename) {
         infile >> intBuffer;
         int val = intBuffer;
         cout << var << " " << val << endl;
-        evidence.insert(make_pair<int, int> (var, val));
+        evidence.insert(make_pair(var, val));
     }
     return evidence;
 }
@@ -562,7 +562,7 @@ int main(int argc, char **argv) {
         stack<pair<Assignment, int> > stk;
         for (int k = 0; k < m.GetDomains()[vOrdering[0]]; ++k) {
             a.SetVal(vOrdering[0],k);
-            stk.push(make_pair<Assignment, int>(a,0));
+            stk.push(make_pair(a,0));
         }
         while(!stk.empty()) {
             count++;
@@ -581,7 +581,7 @@ int main(int argc, char **argv) {
                 int nextVar = vOrdering[nextDepth];
                 for (int k = 0; k < m.GetDomains()[nextVar]; ++k) {
                     aa.first.SetVal(nextVar,k);
-                    stk.push(make_pair<Assignment, int>(aa.first,nextDepth));
+                    stk.push(make_pair(aa.first,nextDepth));
                 }
             }
 
