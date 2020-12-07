@@ -32,8 +32,8 @@ NodeManager *NodeManager::GetNodeManager() {
 void NodeManager::GetParamSets2(
         const vector<MetaNodePtr> &lhs, const vector<MetaNodePtr> &rhs, vector<ApplyParamSet> &ret) const {
 
-    unordered_map<int, int> lhsMap;
-    unordered_map<int, int> rhsMap;
+    boost::unordered_map<int, int> lhsMap;
+    boost::unordered_map<int, int> rhsMap;
     set<int> lhsVarsSet;
     set<int> rhsVarsSet;
 
@@ -134,23 +134,23 @@ void NodeManager::GetParamSets2(
 
     BOOST_FOREACH(int s, lhsVarsSet) {
         if (s < 0 && rhsVarsSet.find(s) != rhsVarsSet.end()) {
-            ret.push_back(make_pair<MetaNodePtr, vector<MetaNodePtr> >(lhs[lhsMap[s]], vector<MetaNodePtr>(1, rhs[rhsMap[s]])));
+            ret.push_back(make_pair(lhs[lhsMap[s]], vector<MetaNodePtr>(1, rhs[rhsMap[s]])));
             rhsVarsSet.erase(s);
         }
         else {
-            ret.push_back(make_pair<MetaNodePtr, vector<MetaNodePtr> >(lhs[lhsMap[s]], vector<MetaNodePtr>()));
+            ret.push_back(make_pair(lhs[lhsMap[s]], vector<MetaNodePtr>()));
         }
     }
 
     BOOST_FOREACH(int s, rhsVarsSet) {
-        ret.push_back(make_pair<MetaNodePtr, vector<MetaNodePtr> >(rhs[rhsMap[s]], vector<MetaNodePtr>()));
+        ret.push_back(make_pair(rhs[rhsMap[s]], vector<MetaNodePtr>()));
     }
 }
 void NodeManager::GetParamSets3(
         const vector<MetaNodePtr> &lhs, const vector<MetaNodePtr> &rhs, vector<ApplyParamSet> &ret) const {
 
-    unordered_map<int, int> lhsMap;
-    unordered_map<int, int> rhsMap;
+    boost::unordered_map<int, int> lhsMap;
+    boost::unordered_map<int, int> rhsMap;
     set<int> lhsVarsSet;
     set<int> rhsVarsSet;
 
@@ -251,21 +251,21 @@ void NodeManager::GetParamSets3(
             }
 
         }
-        ret.push_back(make_pair<MetaNodePtr, vector<MetaNodePtr> >(paramLHS, paramRHS));
+        ret.push_back(make_pair(paramLHS, paramRHS));
     }
 
     BOOST_FOREACH(int s, lhsVarsSet) {
         if (s < 0 && rhsVarsSet.find(s) != rhsVarsSet.end()) {
-            ret.push_back(make_pair<MetaNodePtr, vector<MetaNodePtr> >(lhs[lhsMap[s]], vector<MetaNodePtr>(1, rhs[rhsMap[s]])));
+            ret.push_back(make_pair(lhs[lhsMap[s]], vector<MetaNodePtr>(1, rhs[rhsMap[s]])));
             rhsVarsSet.erase(s);
         }
         else {
-            ret.push_back(make_pair<MetaNodePtr, vector<MetaNodePtr> >(lhs[lhsMap[s]], vector<MetaNodePtr>()));
+            ret.push_back(make_pair(lhs[lhsMap[s]], vector<MetaNodePtr>()));
         }
     }
 
     BOOST_FOREACH(int s, rhsVarsSet) {
-        ret.push_back(make_pair<MetaNodePtr, vector<MetaNodePtr> >(rhs[rhsMap[s]], vector<MetaNodePtr>()));
+        ret.push_back(make_pair(rhs[rhsMap[s]], vector<MetaNodePtr>()));
     }
 }
 
@@ -275,12 +275,12 @@ vector<ApplyParamSet> NodeManager::GetParamSets(const DirectedGraph &tree,
     vector<ApplyParamSet> ret;
     // First check if rhs is terminal and lhs is size 1
     if (lhs.size() == 1 && rhs.size() == 1 && rhs[0]->IsTerminal()) {
-        ret.push_back(make_pair<MetaNodePtr, vector<MetaNodePtr> >(lhs[0], rhs));
+        ret.push_back(make_pair(lhs[0], rhs));
         return ret;
     }
 
-    unordered_map<int, int> lhsMap;
-    unordered_map<int, int> rhsMap;
+    boost::unordered_map<int, int> lhsMap;
+    boost::unordered_map<int, int> rhsMap;
 
     /*
     google::dense_hash_map<int, MetaNodePtr> lhsMap;
@@ -301,7 +301,7 @@ vector<ApplyParamSet> NodeManager::GetParamSets(const DirectedGraph &tree,
 
     // For each variable on the lhs, find the highest ancestor
     // which exists on the rhs.
-    unordered_map<int, int> hiAncestor;
+    boost::unordered_map<int, int> hiAncestor;
 
     /*
     google::dense_hash_map<int, int> hiAncestor;
@@ -346,20 +346,20 @@ vector<ApplyParamSet> NodeManager::GetParamSets(const DirectedGraph &tree,
 
     // make a list of descendants for each variable, based on the
     // ancestor mapping above
-    unordered_map<int, vector<int> > descendants;
+    boost::unordered_map<int, vector<int> > descendants;
     /*
     google::dense_hash_map<int, vector<int> > descendants;
     descendants.set_empty_key(EMPTY_KEY);
     */
 
-    unordered_map<int, int>::iterator it = hiAncestor.begin();
+    boost::unordered_map<int, int>::iterator it = hiAncestor.begin();
 //    google::dense_hash_map<int, int>::iterator it = hiAncestor.begin();
 
     for (; it != hiAncestor.end(); ++it) {
         descendants[it->second].push_back(it->first);
     }
 
-    unordered_map<int, vector<int> >::iterator dit = descendants.begin();
+    boost::unordered_map<int, vector<int> >::iterator dit = descendants.begin();
 //    google::dense_hash_map<int, vector<int> >::iterator dit = descendants.begin();
     for (; dit != descendants.end(); ++dit) {
         MetaNodePtr paramLHS;
@@ -367,7 +367,7 @@ vector<ApplyParamSet> NodeManager::GetParamSets(const DirectedGraph &tree,
         int anc = dit->first;
         const vector<int> &dList = dit->second;
         bool fromLHS = false;
-        unordered_map<int, int>::iterator mit;
+        boost::unordered_map<int, int>::iterator mit;
 //        google::dense_hash_map<int, MetaNodePtr>::iterator mit;
         if ( (mit = lhsMap.find(anc)) != lhsMap.end() ) {
             paramLHS = lhs[mit->second];
@@ -392,7 +392,7 @@ vector<ApplyParamSet> NodeManager::GetParamSets(const DirectedGraph &tree,
                 lhsMap.erase(mit);
             }
         }
-        ret.push_back(make_pair<MetaNodePtr, vector<MetaNodePtr> >(paramLHS, paramRHS));
+        ret.push_back(make_pair(paramLHS, paramRHS));
     }
     return ret;
 
@@ -773,7 +773,7 @@ ANDNodePtr NodeManager::Apply(MetaNodePtr lhs,
     ANDNodePtr u = CreateMetaNode(varid, card, children);
 
 #ifdef USE_OPCACHE
-    opCache.insert(make_pair<Operation, ANDNodePtr>(ocEntry, u));
+    opCache.insert(make_pair(ocEntry, u));
     opCacheMemUsage += (ocEntry.MemUsage() + sizeof(u) + (u->GetChildren().size() * sizeof(MetaNodePtr))) / MB_PER_BYTE;
 
     // Purge if op cache is too large
@@ -911,7 +911,7 @@ ANDNodePtr NodeManager::Marginalize(MetaNodePtr root, const Scope &s,
     */
     ANDNodePtr ret = CreateMetaNode(varid, card, newANDNodes);
 #ifdef USE_OPCACHE
-    opCache.insert(make_pair<Operation, ANDNodePtr>(ocEntry, ret));
+    opCache.insert(make_pair(ocEntry, ret));
     opCacheMemUsage += (ocEntry.MemUsage() + sizeof(ret) + (ret->GetChildren().size() * sizeof(MetaNodePtr))) / MB_PER_BYTE;
 
     // Purge if op cache is too large
@@ -1167,7 +1167,7 @@ ANDNodePtr NodeManager::Maximize(MetaNodePtr root, const Scope &s,
     ANDNodePtr ret = CreateMetaNode(varid, card, newANDNodes);
 
 #ifdef USE_OPCACHE
-    opCache.insert(make_pair<Operation, ANDNodePtr>(ocEntry, ret));
+    opCache.insert(make_pair(ocEntry, ret));
     opCacheMemUsage += (ocEntry.MemUsage() + sizeof(ret) + (ret->GetChildren().size() * sizeof(MetaNodePtr))) / MB_PER_BYTE;
 
     // Purge if op cache is too large
@@ -1471,7 +1471,7 @@ ANDNodePtr NodeManager::Minimize(MetaNodePtr root, const Scope &s,
     */
     ANDNodePtr ret = CreateMetaNode(varid, card, newANDNodes);
 #ifdef USE_OPCACHE
-    opCache.insert(make_pair<Operation, ANDNodePtr>(ocEntry, ret));
+    opCache.insert(make_pair(ocEntry, ret));
     opCacheMemUsage += (ocEntry.MemUsage() + sizeof(ret) + (ret->GetChildren().size() * sizeof(MetaNodePtr))) / MB_PER_BYTE;
 
     // Purge if op cache is too large

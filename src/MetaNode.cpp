@@ -345,7 +345,7 @@ void MetaNode::GetNumNodesPerVar(vector<unsigned int> &numMeta) const {
 }
 
 double MetaNode::ComputeTotalMemory() const {
-    unordered_set<const MetaNode *> nodeSet;
+    boost::unordered_set<const MetaNode *> nodeSet;
     FindUniqueNodes(nodeSet);
     double memUsage = 0;
     BOOST_FOREACH(const MetaNode *m, nodeSet) {

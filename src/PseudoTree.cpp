@@ -234,7 +234,7 @@ pair<DirectedGraph, int> PseudoTree::GenerateEmbeddable(const Scope &s) const {
     depth_first_search(g, root_vertex(VertexDesc(root)).
             visitor(vis).
             edge_color_map(get(edge_color,g)));
-    return make_pair<DirectedGraph, int>(embeddableTree, embedRoot);
+    return make_pair(embeddableTree, embedRoot);
 }
 
 PseudoTree::~PseudoTree() {
